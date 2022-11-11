@@ -1,22 +1,13 @@
-import config from "./config/config";
-import { app } from "./app";
-import { db } from "./services/postgres";
+import {server} from "./app";
 
-const start = async () => {
-  // Connect Database
-  await db();
+(async function() {
+    server.listen(3000, () => {
+        console.log("Listening on localhost: 3000");
+    });
 
-  const PORT = config.PORT || 3000;
-
-  const server = app.listen(PORT, () => {
-    console.log(`Listening on port ${PORT}`);
-  });
-
-  process.on("unhandledRejection", (err, promise) => {
-    console.log(`Error: ${err}`);
-    // Close server & exit process
-    server.close(() => process.exit(1));
-  });
-};
-
-start();
+    process.on("unhandledRejection", (err) => {
+        console.log(`ERROR: ${err}`);
+        // Close server & exit process
+        server.close(() => process.exit(1))
+    })
+})();
